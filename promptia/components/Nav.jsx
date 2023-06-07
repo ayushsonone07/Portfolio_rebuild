@@ -6,16 +6,16 @@ import Image from 'next/image'
 
 const Nav = () => {
 
-    const isUserLoggedIn = true;
+    const {data: session} = useSession();
     const [providers, setproviders] = useState(null);
     const [toggleDropdown, settoggleDropdown] = useState(false);
 
     useEffect(() => {
-        const setproviders = async () => {
+        const setUpProviders = async () => {
             const response = await getProviders();
             setproviders(response)
         }
-        setproviders();
+        setUpProviders();
     },[])
 
   return (
@@ -32,12 +32,12 @@ const Nav = () => {
 
         {/* desktop responsive navigation */}
         <div className='sm:flex hidden'>    
-            {isUserLoggedIn 
+            {session?.user 
             ?( <div className='flex gap-3 md:gap-5'>
-                <Link href='/create-prompt' className='black_btn'>Create Post</Link>
+                <Link href='/create' className='black_btn'>Create Post</Link>
                 <button type='button' onClick={signOut} className='outline_btn'>Sign Out</button>
                 <Link href='/profile'>
-                    <Image src='/assets/images/logo.svg'
+                    <Image src={session?.user.image}
                     alt='Profile'
                     width={37}
                     height={37}
@@ -61,10 +61,10 @@ const Nav = () => {
 
         {/* mobile responsive navigation */}
         <div className='sm:hidden flex relative'>
-            {isUserLoggedIn 
+            {session?.user 
             ?(
                 <div className='flex'>
-                    <Image src='/assets/images/logo.svg'
+                    <Image src={session?.user.image}
                         alt='Profile'
                         width={37}
                         height={37}
@@ -81,7 +81,7 @@ const Nav = () => {
                             > My Profile </Link>
 
                             <Link 
-                            href='/create-prompt'
+                            href='/create'
                             className='dropdown_link'
                             onClick={() => settoggleDropdown(false)}
                             > Create Prompt </Link>
